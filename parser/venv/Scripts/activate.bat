@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\User\Desktop\PROJECT PRACTICUM\parser test\venv
+set VIRTUAL_ENV=C:\Users\User\Desktop\PROJECT PRACTICUM\hhru parser\hhru_parser\parser\venv
 
 if not defined PROMPT set PROMPT=$P$G
 

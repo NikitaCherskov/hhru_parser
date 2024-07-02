@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\User\Desktop\PROJECT PRACTICUM\parser test\venv"
+VIRTUAL_ENV="C:\Users\User\Desktop\PROJECT PRACTICUM\hhru parser\hhru_parser\parser\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

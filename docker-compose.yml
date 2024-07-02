@@ -1,0 +1,5 @@
+services:
+  parser:
+    build: ./parser/
+    container_name: parser
+    command: sh -c "sleep 1s ; python3 ./main.py"
