@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import fake_useragent
 import time
-import json
+#import json
 
 
     
@@ -38,7 +38,8 @@ def get_links(text):
                 continue
             soup2 = BeautifulSoup(data2.content, "lxml")
             for a in soup2.find_all("a", attrs={"class":"bloko-link","target":"_blank","data-qa":""}):
-                yield f"{a.attrs['href'].split('?')[0]}"
+                #yield f"{a.attrs['href'].split('?')[0]}"
+                yield f"{a.attrs['href']}"
         except Exception as e:
             print(f"{e}")
         time.sleep(1)
@@ -72,5 +73,5 @@ def get_resume(link):
 
 if __name__ == "__main__":
     for a in get_links("python"):
-        print(get_resume(a))
-        print(a)
+        print(get_resume(a), flush = True)
+        #print(a)
