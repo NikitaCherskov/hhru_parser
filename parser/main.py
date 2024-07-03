@@ -140,31 +140,48 @@ def get_blocks(text):
 
 
 
-def execute(sql_text):
+def execute_in(sql_text, sql_values):
     try:
         connection = mysql.connector.connect(
         user='root', password='root', host='database', port="3306", database='db')
         print("DB connected")
         cursor = connection.cursor()
-        cursor.execute(sql_text)
+        cursor.execute(sql_text, sql_values)
+        connection.commit()
     except Exception as e:
         print(f"{e}")
-    time.sleep(1)
+
+
+
+def execute_out():
+    try:
+        connection = mysql.connector.connect(
+        user='root', password='root', host='database', port="3306", database='db')
+        print("DB connected")
+        cursor = connection.cursor()
+        cursor.execute("Select * FROM vacancies")
+        vacancies = cursor.fetchall()
+        return vacancies
+    except Exception as e:
+        print(f"{e}")
+        return ""
 
 
 
 if __name__ == "__main__":
     sql_text = ""
-    i = 0
+    k = 0
     for a in get_blocks("python"):
         #print(a["name"], flush=True)
         name = a["name"]
         experience = a["experience"]
         job_creator = a["job_creator"]
         adress = a["adress"]
-        sql_text += f"INSERT INTO Vacancies(VacancyTitle, Experience, JobCreator, Adress) VALUES(\"{name}\",\"{experience}\",\"{job_creator}\",\"{adress}\");\n"
-        if(i >= 10):
-            execute(sql_text)
-            sql_text = ""
-            i = 0
-        i += 1
+        sql_text = "INSERT INTO vacancies(VacancyTitle, Experience, JobCreator, Adress) VALUES(%s, %s, %s, %s)"
+        sql_values = (name, experience, job_creator, adress)
+        execute_in(sql_text, sql_values)
+        if(k >= 10):
+            print(execute_out())
+            k = 0
+            break
+        k += 1
