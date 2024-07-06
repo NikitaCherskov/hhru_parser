@@ -1,13 +1,13 @@
 services:
-  parser:
-    build: ./parser/
-    container_name: parser
-    ports:
-      - '8001:8000'
-    command: sh -c "python main.py"
-    depends_on:
-      database:
-        condition: service_healthy
+  #parser:
+  #  build: ./parser/
+  #  container_name: parser
+  #  ports:
+  #    - '8001:8000'
+  #  command: sh -c "python main.py"
+  #  depends_on:
+  #    database:
+  #      condition: service_healthy
 
   database:
     build: ./database/

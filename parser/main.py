@@ -93,7 +93,7 @@ def get_resume(link):
 
 
 
-def get_blocks(text):
+def get_blocks(text, amount):
     #заходит на hh
     data = requests.get(
         url = f"https://hh.ru/search/vacancy?text={text}&area=1&page=1",
@@ -111,6 +111,7 @@ def get_blocks(text):
         return
 
     #проходит по всем страницам
+    i = 0
     for page in range(page_count):
         try:
             data2 = requests.get(
@@ -143,7 +144,10 @@ def get_blocks(text):
                     "job_creator":job_creator,
                     "adress":adress
                 }
+                if i >= amount:
+                    return
                 yield resume
+                i += 1
             print(page)
         except Exception as e:
             print(f"{e}")
@@ -154,8 +158,8 @@ def get_blocks(text):
 def execute_in(sql_text, sql_values):
     try:
         connection = mysql.connector.connect(
-        user='root', password='root', host='database', port="3306", database='db')
-        #user='root', password='root', host='127.0.0.1', port="3306", database='db')
+        #user='root', password='root', host='database', port="3306", database='db')
+        user='root', password='root', host='127.0.0.1', port="3306", database='db')
         print("DB connected")
         cursor = connection.cursor()
         cursor.execute(sql_text, sql_values)
@@ -163,38 +167,46 @@ def execute_in(sql_text, sql_values):
     except Exception as e:
         print(f"{e}")
 
-
-
-def execute_out():
+def execute_drop():
     try:
         connection = mysql.connector.connect(
-        user='root', password='root', host='database', port="3306", database='db')
-        #user='root', password='root', host='127.0.0.1', port="3306", database='db')
+        #user='root', password='root', host='database', port="3306", database='db')
+        user='root', password='root', host='127.0.0.1', port="3306", database='db')
         print("DB connected")
         cursor = connection.cursor()
-        cursor.execute("Select * FROM vacancies")
-        vacancies = cursor.fetchall()
-        return vacancies
+        cursor.execute("DELETE FROM vacancies")
+        connection.commit()
+    except Exception as e:
+        print(f"{e}")
+
+def execute_out(filter):
+    try:
+        connection = mysql.connector.connect(
+        #user='root', password='root', host='database', port="3306", database='db')
+        user='root', password='root', host='127.0.0.1', port="3306", database='db')
+        print("DB connected")
+        cursor = connection.cursor()
+
+        if filter == "":
+            cursor.execute("Select * FROM vacancies")
+            vacancies = cursor.fetchall()
+            return vacancies
+        else:
+            query = "Select * FROM vacancies WHERE VacancyTitle = %s OR Experience = %s OR JobCreator = %s OR Adress = %s"
+            cursor.execute(query, (filter, filter, filter, filter))
+            vacancies = cursor.fetchall()
+            return vacancies
     except Exception as e:
         print(f"{e}")
         return ""
 
 
 
-@app.get("/")
-def main_page():
-    return "hello world"
-
-
-
-if __name__ == "__main__":
-    #uvicorn start
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
+def fill(amount : int, parser_request : str):
     #program start
     sql_text = ""
-    k = 0
-    for a in get_blocks("python"):
+    i = 0
+    for a in get_blocks(parser_request, amount):
         #print(a["name"], flush=True)
         name = a["name"]
         experience = a["experience"]
@@ -203,8 +215,22 @@ if __name__ == "__main__":
         sql_text = "INSERT INTO vacancies(VacancyTitle, Experience, JobCreator, Adress) VALUES(%s, %s, %s, %s)"
         sql_values = (name, experience, job_creator, adress)
         execute_in(sql_text, sql_values)
-        if(k >= 10):
-            print(execute_out())
-            k = 0
-            break
-        k += 1
+        i += 1
+
+
+
+
+@app.get("/{amount}/{parser_request}")
+def main_page(amount : int,
+              parser_request : str,
+              filter : str = ""):
+    execute_drop()
+    fill(amount, parser_request)
+    return execute_out(filter)
+
+
+
+if __name__ == "__main__":
+    #uvicorn start
+    #uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
