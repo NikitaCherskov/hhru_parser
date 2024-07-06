@@ -3,3 +3,4 @@ bs4
 lxml
 fake_useragent
 mysql-connector-python
+fastapi[all]

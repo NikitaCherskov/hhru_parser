@@ -3,12 +3,23 @@ from bs4 import BeautifulSoup
 import fake_useragent
 import time
 import mysql.connector
+
+import asyncio
+import uvicorn
+from pydantic import BaseModel
+from pydantic import Field
+from typing import Optional
+from typing import List
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
 #import json
 
 
 
 ua = fake_useragent.UserAgent()
 ua_rand = ua.random
+app = FastAPI(title="test_app")
+templates = Jinja2Templates(directory="templates")
 
 
 
@@ -144,6 +155,7 @@ def execute_in(sql_text, sql_values):
     try:
         connection = mysql.connector.connect(
         user='root', password='root', host='database', port="3306", database='db')
+        #user='root', password='root', host='127.0.0.1', port="3306", database='db')
         print("DB connected")
         cursor = connection.cursor()
         cursor.execute(sql_text, sql_values)
@@ -157,6 +169,7 @@ def execute_out():
     try:
         connection = mysql.connector.connect(
         user='root', password='root', host='database', port="3306", database='db')
+        #user='root', password='root', host='127.0.0.1', port="3306", database='db')
         print("DB connected")
         cursor = connection.cursor()
         cursor.execute("Select * FROM vacancies")
@@ -168,7 +181,17 @@ def execute_out():
 
 
 
+@app.get("/")
+def main_page():
+    return "hello world"
+
+
+
 if __name__ == "__main__":
+    #uvicorn start
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
+    #program start
     sql_text = ""
     k = 0
     for a in get_blocks("python"):
