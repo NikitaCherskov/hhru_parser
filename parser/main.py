@@ -158,8 +158,8 @@ def get_blocks(text, amount):
 def execute_in(sql_text, sql_values):
     try:
         connection = mysql.connector.connect(
-        #user='root', password='root', host='database', port="3306", database='db')
-        user='root', password='root', host='127.0.0.1', port="3306", database='db')
+        user='root', password='root', host='database', port="3306", database='db')
+        #user='root', password='root', host='127.0.0.1', port="3306", database='db')
         print("DB connected")
         cursor = connection.cursor()
         cursor.execute(sql_text, sql_values)
@@ -170,8 +170,8 @@ def execute_in(sql_text, sql_values):
 def execute_drop():
     try:
         connection = mysql.connector.connect(
-        #user='root', password='root', host='database', port="3306", database='db')
-        user='root', password='root', host='127.0.0.1', port="3306", database='db')
+        user='root', password='root', host='database', port="3306", database='db')
+        #user='root', password='root', host='127.0.0.1', port="3306", database='db')
         print("DB connected")
         cursor = connection.cursor()
         cursor.execute("DELETE FROM vacancies")
@@ -182,8 +182,8 @@ def execute_drop():
 def execute_out(filter):
     try:
         connection = mysql.connector.connect(
-        #user='root', password='root', host='database', port="3306", database='db')
-        user='root', password='root', host='127.0.0.1', port="3306", database='db')
+        user='root', password='root', host='database', port="3306", database='db')
+        #user='root', password='root', host='127.0.0.1', port="3306", database='db')
         print("DB connected")
         cursor = connection.cursor()
 
@@ -231,6 +231,5 @@ def main_page(amount : int,
 
 
 if __name__ == "__main__":
-    #uvicorn start
-    #uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    #uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
